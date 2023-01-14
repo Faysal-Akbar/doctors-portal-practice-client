@@ -1,20 +1,35 @@
 import React from 'react';
-import auth from '../../firebase.init';
-import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthProvider';
+import { useState } from 'react';
 
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
-    const handleLogin = data => {
+    const { signIn } = useContext(AuthContext);
+    const [loginError, setLoginError] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    let from = location.state?.from?.pathname || "/";
+
+
+    const handleLogin = (data) => {
+        setLoginError('');
         console.log(data);
+        signIn(data.email, data.password)
+        .then(result => {
+            const user = result.user;
+            console.log(user);
+            navigate(from, { replace: true });
+        })
+        .catch(error => {
+            const errorMessage = error.message;
+            setLoginError(errorMessage);
+        });
     }
-    // const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
-    // if(user){
-    //     console.log(user);
-    // }
     return (
-        <>
         <div className='flex justify-center items-center h-screen'>
             <div className='w-96 p-7'>
                 <h2 className='text-2xl font-bold text-center'>Login</h2>
@@ -47,14 +62,13 @@ const Login = () => {
                     </label>
                     </div>
                     <input className='btn btn-primary w-full' value="LOGIN" type="submit" />
+                    {loginError && <p className='text-red-600'>{loginError}</p>}
                 </form>
                 <p>New to Doctors Portal? <Link to="/signup" className='text-accent'>Create new account</Link></p>
                 <div className="divider">OR</div>
                 <button className="btn btn-outline uppercase w-full">continue with google</button>
             </div>
         </div>
-        </>
     );
-};
-
+    };
 export default Login;

@@ -7,11 +7,15 @@ import Login from './Pages/Login/Login';
 import Appointment from './Pages/Appointment/Appointment';
 import Reviews from './Pages/Home/Reviews';
 import SignUp from './Pages/SignUp/SignUp';
+import Dashboard from './Pages/Dashboard/Dashboard/Dashboard';
+import { Toaster } from 'react-hot-toast';
+import PrivateRoute from './Pages/PrivateRoute/PrivateRoute';
 
 function App() {
   return (
     <div className='max-w-7xl mx-auto px-12'>
       <Navbar></Navbar>
+      <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="appointment" element={<Appointment />} />
@@ -19,6 +23,7 @@ function App() {
         <Route path="Reviews" element={<Reviews />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       </Routes>
     </div>
   );
